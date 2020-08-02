@@ -71,13 +71,41 @@ func (s *server) handleTextDocumentCompletion(ctx context.Context, conn *jsonrpc
 
 	items := make([]lsp.CompletionItem, 0)
 
+	w := s.WordAt(params.TextDocument.URI, params.Position)
+
+	w = strings.ReplaceAll(w, "<", "")
+	w = strings.ReplaceAll(w, ">", "")
+
 	for id, m := range s.neuronMeta {
-		item := lsp.CompletionItem{
-			Label:      id,
-			InsertText: id,
-			Detail:     m.ZettelTitle,
+		if w == "" {
+			item := lsp.CompletionItem{
+				Label:      id,
+				InsertText: id,
+				Detail:     m.ZettelTitle,
+			}
+			items = append(items, item)
+			continue
 		}
-		items = append(items, item)
+
+		if strings.Contains(m.ZettelID, w) {
+			item := lsp.CompletionItem{
+				Label:      id,
+				InsertText: id,
+				Detail:     m.ZettelTitle,
+			}
+			items = append(items, item)
+			continue
+		}
+
+		if strings.Contains(m.ZettelTitle, w) {
+			item := lsp.CompletionItem{
+				Label:      id,
+				InsertText: id,
+				Detail:     m.ZettelTitle,
+			}
+			items = append(items, item)
+			continue
+		}
 	}
 
 	return items, nil
