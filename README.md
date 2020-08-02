@@ -24,6 +24,7 @@ Suports
 #### Installation
 ```
 go get -u github.com/aca/neuron-language-server
+# Or: nix-build (if you have Nix)
 ```
 
 #### LSP client settings
