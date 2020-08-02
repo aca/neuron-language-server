@@ -1,19 +1,19 @@
 # neuron-language-server
 Language server for [neuron](https://github.com/srid/neuron).
 
-Neuron will embed language server in neuron. Checkout [sric/neuron#213](https://github.com/srid/neuron/issues/213) for updates.<br/> 
+Neuron will embed language server in neuron. Check [sric/neuron#213](https://github.com/srid/neuron/issues/213) for updates.<br/> 
 This is just an personal experiment.
 
 Suports
-- textDocument/completion
-![completion](./images/completion.png)
+- textDocument/completion(search by title/id)<br/>
+  ![completion](./images/completion.png)
 - textDocument/definition
-- textDocument/hover
-![definition](./images/definition.png)
+- textDocument/hover<br/>
+  ![definition](./images/definition.png)
 
 
 #### TODO
-- improve completion(maybe search by title?)
+- improve completion
 - textDocument/codeAction
 - .... a lot, I don't know when it will be
 
