@@ -63,9 +63,24 @@ func (s *server) handleTextDocumentCompletion(ctx context.Context, conn *jsonrpc
 		return nil, &jsonrpc2.Error{Code: jsonrpc2.CodeInvalidParams}
 	}
 
-	item := lsp.CompletionItem{}
+	var params lsp.CompletionParams
+	err = json.Unmarshal(*req.Params, &params)
+	if err != nil {
+		return nil, err
+	}
 
-	return item, nil
+	items := make([]lsp.CompletionItem, 0)
+
+	for id, m := range s.neuronMeta {
+		item := lsp.CompletionItem{
+			Label:      id,
+			InsertText: id,
+			Detail:     m.ZettelTitle,
+		}
+		items = append(items, item)
+	}
+
+	return items, nil
 }
 
 func (s *server) handleTextDocumentDefinition(ctx context.Context, conn *jsonrpc2.Conn, req *jsonrpc2.Request) (result interface{}, err error) {
@@ -182,10 +197,10 @@ func (s *server) handleInitialize(ctx context.Context, conn *jsonrpc2.Conn, req 
 			},
 			DefinitionProvider: true,
 			HoverProvider:      true,
-			// CompletionProvider: &lsp.CompletionOptions{
-			// 	ResolveProvider:   true,
-			// 	TriggerCharacters: []string{"<", "[["},
-			// },
+			CompletionProvider: &lsp.CompletionOptions{
+				ResolveProvider:   true,
+				TriggerCharacters: []string{"<"},
+			},
 		},
 	}
 

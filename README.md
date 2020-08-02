@@ -5,13 +5,15 @@ Neuron will embed language server in neuron. Checkout [sric/neuron#213](https://
 This is just an personal experiment.
 
 Suports
+- textDocument/completion
+![completion](./images/completion.png)
 - textDocument/definition
 - textDocument/hover
-![pic alt](./images/definition.png)
+![definition](./images/definition.png)
 
 
 #### TODO
-- textDocument/completion
+- improve completion(maybe search by title?)
 - textDocument/codeAction
 - .... a lot, I don't know when it will be
 
