@@ -142,9 +142,10 @@ func (s *server) handleTextDocumentCompletion(ctx context.Context, conn *jsonrpc
 	w = strings.ReplaceAll(w, ">", "")
 
 	for id, m := range s.neuronMeta {
+
 		if w == "" {
 			item := lsp.CompletionItem{
-        Label:      fmt.Sprintf("%v:%v", id, m.ZettelTitle),
+				Label:      fmt.Sprintf("%v:%v", id, m.ZettelTitle),
 				InsertText: id,
 				Detail:     m.ZettelDay,
 			}
@@ -152,9 +153,12 @@ func (s *server) handleTextDocumentCompletion(ctx context.Context, conn *jsonrpc
 			continue
 		}
 
-		if strings.Contains(m.ZettelID, w) {
+		w = strings.ToLower(w)
+
+		zid := strings.ToLower(m.ZettelID)
+		if strings.Contains(zid, w) {
 			item := lsp.CompletionItem{
-        Label:      fmt.Sprintf("%v:%v", id, m.ZettelTitle),
+				Label:      fmt.Sprintf("%v:%v", id, m.ZettelTitle),
 				InsertText: id,
 				Detail:     m.ZettelDay,
 			}
@@ -162,9 +166,10 @@ func (s *server) handleTextDocumentCompletion(ctx context.Context, conn *jsonrpc
 			continue
 		}
 
-		if strings.Contains(m.ZettelTitle, w) {
+		ztitle := strings.ToLower(m.ZettelTitle)
+		if strings.Contains(ztitle, w) {
 			item := lsp.CompletionItem{
-        Label:      fmt.Sprintf("%v:%v", id, m.ZettelTitle),
+				Label:      fmt.Sprintf("%v:%v", id, m.ZettelTitle),
 				InsertText: id,
 				Detail:     m.ZettelDay,
 			}
