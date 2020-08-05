@@ -79,9 +79,9 @@ func (s *server) handleTextDocumentCompletion(ctx context.Context, conn *jsonrpc
 	for id, m := range s.neuronMeta {
 		if w == "" {
 			item := lsp.CompletionItem{
-				Label:      id,
+        Label:      fmt.Sprintf("%v:%v", id, m.ZettelTitle),
 				InsertText: id,
-				Detail:     m.ZettelTitle,
+				Detail:     m.ZettelDay,
 			}
 			items = append(items, item)
 			continue
@@ -89,9 +89,9 @@ func (s *server) handleTextDocumentCompletion(ctx context.Context, conn *jsonrpc
 
 		if strings.Contains(m.ZettelID, w) {
 			item := lsp.CompletionItem{
-				Label:      id,
+        Label:      fmt.Sprintf("%v:%v", id, m.ZettelTitle),
 				InsertText: id,
-				Detail:     m.ZettelTitle,
+				Detail:     m.ZettelDay,
 			}
 			items = append(items, item)
 			continue
@@ -99,9 +99,9 @@ func (s *server) handleTextDocumentCompletion(ctx context.Context, conn *jsonrpc
 
 		if strings.Contains(m.ZettelTitle, w) {
 			item := lsp.CompletionItem{
-				Label:      id,
+        Label:      fmt.Sprintf("%v:%v", id, m.ZettelTitle),
 				InsertText: id,
-				Detail:     m.ZettelTitle,
+				Detail:     m.ZettelDay,
 			}
 			items = append(items, item)
 			continue
