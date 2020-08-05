@@ -4,18 +4,27 @@ Language server for [neuron](https://github.com/srid/neuron).
 Neuron will embed language server in neuron. Check [sric/neuron#213](https://github.com/srid/neuron/issues/213) for updates.<br/> 
 This is just an personal experiment.
 
-Suports
+Supports
 - textDocument/completion(search by title/id)<br/>
   ![completion](./images/completion.png)
 - textDocument/definition
 - textDocument/hover<br/>
   ![definition](./images/definition.png)
+- textDocument/publishDiagnostics<br/>
+  ![diagnostic](./images/diagnostic.png)<br/>
+  Virtual text is available with [nvim-lsp](https://github.com/neovim/nvim-lsp)
 
 
 #### TODO
-- improve completion
-- textDocument/codeAction
-- .... a lot, I don't know when it will be
+* [Renaming tag](https://github.com/srid/neuron/issues/213#issuecomment-648885576)
+
+* improve completion
+
+* LSP snippets
+    - header snippets?
+
+* textDocument/codeAction<br/>
+  https://github.com/felko/neuron-mode has some awesome features that might be converted to code actions.
 
 
 #### Prerequisites

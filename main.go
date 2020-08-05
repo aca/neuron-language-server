@@ -36,9 +36,10 @@ func main() {
 	connOpt = append(connOpt, jsonrpc2.LogMessages(logger))
 
 	s := &server{
-		logger:     logger,
-		documents:  make(map[lsp.DocumentURI]string),
-		neuronMeta: make(map[string]neuron.Result),
+		logger:         logger,
+		documents:      make(map[lsp.DocumentURI]string),
+		neuronMeta:     make(map[string]neuron.Result),
+		diagnosticChan: make(chan lsp.DocumentURI),
 	}
 
 	s.logger.Print("start")

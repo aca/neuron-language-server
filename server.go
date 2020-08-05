@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"github.com/aca/neuron-language-server/neuron"
@@ -16,12 +17,74 @@ import (
 )
 
 type server struct {
-	conn       *jsonrpc2.Conn
-	rootURI    string // from initliaze param
-	rootDir    string
-	logger     *log.Logger
-	neuronMeta map[string]neuron.Result
-	documents  map[lsp.DocumentURI]string
+	conn           *jsonrpc2.Conn
+	rootURI        string // from initliaze param
+	rootDir        string
+	logger         *log.Logger
+	neuronMeta     map[string]neuron.Result
+	documents      map[lsp.DocumentURI]string
+	diagnosticChan chan lsp.DocumentURI
+}
+
+func (s *server) update(uri lsp.DocumentURI) {
+	select {
+	case s.diagnosticChan <- lsp.DocumentURI(uri):
+	default:
+		s.logger.Println("skip diagnostic")
+	}
+}
+
+var neuronLinkRegex = regexp.MustCompile(`<\w+(\?cf)?>`)
+
+func (s *server) findLinks(txt string) []lsp.Diagnostic {
+	lines := strings.Split(txt, "\n")
+
+	diagnostics := []lsp.Diagnostic{}
+
+	for ln, lt := range lines {
+		matches := neuronLinkRegex.FindAllStringIndex(lt, -1)
+
+		chars := []rune(lt)
+
+		for _, match := range matches {
+			matchStr := fmt.Sprintf("%s", string(chars[match[0]+1:match[1]-1]))
+			matchStr = strings.TrimSuffix(matchStr, "?cf")
+			matchLink, ok := s.neuronMeta[matchStr]
+			if !ok {
+				// s.logger.Println("match link not found", matchStr)
+				continue
+			}
+			diagnostics = append(diagnostics, lsp.Diagnostic{
+				Range: lsp.Range{
+					Start: lsp.Position{Line: ln, Character: match[0]},
+					End:   lsp.Position{Line: ln, Character: match[1]},
+				},
+				Message:  matchLink.ZettelTitle,
+				Severity: 4,
+			})
+		}
+
+	}
+
+	return diagnostics
+}
+
+func (s *server) diagnostic() {
+	for {
+		s.logger.Println("diagnostic start")
+		uri, _ := <-s.diagnosticChan
+
+		diagnostics := s.findLinks(s.documents[uri])
+
+		s.conn.Notify(
+			context.Background(),
+			"textDocument/publishDiagnostics",
+			&lsp.PublishDiagnosticsParams{
+				URI:         uri,
+				Diagnostics: diagnostics,
+				// Version: ,
+			})
+	}
 }
 
 func (s *server) handleTextDocumentDidOpen(ctx context.Context, conn *jsonrpc2.Conn, req *jsonrpc2.Request) (result interface{}, err error) {
@@ -36,6 +99,7 @@ func (s *server) handleTextDocumentDidOpen(ctx context.Context, conn *jsonrpc2.C
 	}
 
 	s.documents[params.TextDocument.URI] = params.TextDocument.Text
+	s.update(params.TextDocument.URI)
 	return nil, nil
 }
 
@@ -55,6 +119,7 @@ func (s *server) handleTextDocumentDidChange(ctx context.Context, conn *jsonrpc2
 	}
 
 	s.documents[params.TextDocument.URI] = params.ContentChanges[0].Text
+	s.update(params.TextDocument.URI)
 	return nil, nil
 }
 
@@ -231,6 +296,8 @@ func (s *server) handleInitialize(ctx context.Context, conn *jsonrpc2.Conn, req 
 			},
 		},
 	}
+
+	go s.diagnostic()
 
 	return initializeResult, nil
 }
