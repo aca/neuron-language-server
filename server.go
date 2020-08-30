@@ -35,7 +35,10 @@ func (s *server) update(uri lsp.DocumentURI) {
 }
 
 // old autolinks format https://github.com/srid/neuron/pull/351
-var neuronLinkRegex = regexp.MustCompile(`<\S+(\?cf)?>`)
+var (
+	neuronLinkRegex    = regexp.MustCompile(`<\S+(\?cf)?>`)
+	neuronNewLinkRegex = regexp.MustCompile(`\[\[\S+\]\]`)
+)
 
 func (s *server) findLinks(txt string) []lsp.Diagnostic {
 	lines := strings.Split(txt, "\n")
@@ -64,6 +67,34 @@ func (s *server) findLinks(txt string) []lsp.Diagnostic {
 			})
 		}
 	}
+
+	for ln, lt := range lines {
+		matches := neuronNewLinkRegex.FindAllStringIndex(lt, -1)
+
+		chars := []rune(lt)
+
+		for _, match := range matches {
+			matchStr := string(chars[match[0]:match[1]])
+			matchStr = strings.ReplaceAll(matchStr, "[[[", "")
+			matchStr = strings.ReplaceAll(matchStr, "]]]", "")
+			matchStr = strings.ReplaceAll(matchStr, "[[", "")
+			matchStr = strings.ReplaceAll(matchStr, "]]", "")
+
+			matchLink, ok := s.neuronMeta[matchStr]
+			if !ok {
+				continue
+			}
+			diagnostics = append(diagnostics, lsp.Diagnostic{
+				Range: lsp.Range{
+					Start: lsp.Position{Line: ln, Character: match[0]},
+					End:   lsp.Position{Line: ln, Character: match[1]},
+				},
+				Message:  matchLink.ZettelTitle,
+				Severity: 4,
+			})
+		}
+	}
+
 	return diagnostics
 }
 
@@ -136,6 +167,12 @@ func (s *server) handleTextDocumentCompletion(ctx context.Context, conn *jsonrpc
 
 	w := s.WordAt(params.TextDocument.URI, params.Position)
 
+	w = strings.ReplaceAll(w, "[[[", "")
+	w = strings.ReplaceAll(w, "]]]", "")
+
+	w = strings.ReplaceAll(w, "[[", "")
+	w = strings.ReplaceAll(w, "]]", "")
+
 	w = strings.ReplaceAll(w, "<", "")
 	w = strings.ReplaceAll(w, ">", "")
 
@@ -190,6 +227,13 @@ func (s *server) handleTextDocumentDefinition(ctx context.Context, conn *jsonrpc
 	}
 
 	w := s.WordAt(params.TextDocument.URI, params.Position)
+
+	w = strings.ReplaceAll(w, "[[[", "")
+	w = strings.ReplaceAll(w, "]]]", "")
+
+	w = strings.ReplaceAll(w, "[[", "")
+	w = strings.ReplaceAll(w, "]]", "")
+
 	w = strings.ReplaceAll(w, "<", "")
 	w = strings.ReplaceAll(w, ">", "")
 
