@@ -12,11 +12,11 @@ package neuron
 // title: Installing NixOS on OVH dedicated servers
 // date: "2020-05-26"
 // tags:
-//     - timeline 
+//     - timeline
 //     - nixos
 // ---
 
-// I recently setup a [AMD Ryzen 7 3700 PRO](https://www.ovh.com/ca/en/dedicated-servers/infra/infra-limited-edition-2/) 
+// I recently setup a [AMD Ryzen 7 3700 PRO](https://www.ovh.com/ca/en/dedicated-servers/infra/infra-limited-edition-2/)
 // `
 
 // 	header, err := GetHeader([]byte(input))
@@ -32,12 +32,12 @@ package neuron
 // }
 
 // func TestGetHeader2(t *testing.T) {
-// 	input := `I recently setup a [AMD Ryzen 7 3700 PRO](https://www.ovh.com/ca/en/dedicated-servers/infra/infra-limited-edition-2/) 
+// 	input := `I recently setup a [AMD Ryzen 7 3700 PRO](https://www.ovh.com/ca/en/dedicated-servers/infra/infra-limited-edition-2/)
 // ---
 // title: Installing NixOS on OVH dedicated servers
 // date: "2020-05-26"
 // tags:
-//     - timeline 
+//     - timeline
 //     - nixos
 // ---
 // `

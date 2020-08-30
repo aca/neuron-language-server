@@ -34,7 +34,8 @@ func (s *server) update(uri lsp.DocumentURI) {
 	}
 }
 
-var neuronLinkRegex = regexp.MustCompile(`<\w+(\?cf)?>`)
+// old autolinks format https://github.com/srid/neuron/pull/351
+var neuronLinkRegex = regexp.MustCompile(`<\S+(\?cf)?>`)
 
 func (s *server) findLinks(txt string) []lsp.Diagnostic {
 	lines := strings.Split(txt, "\n")
@@ -51,7 +52,6 @@ func (s *server) findLinks(txt string) []lsp.Diagnostic {
 			matchStr = strings.TrimSuffix(matchStr, "?cf")
 			matchLink, ok := s.neuronMeta[matchStr]
 			if !ok {
-				// s.logger.Println("match link not found", matchStr)
 				continue
 			}
 			diagnostics = append(diagnostics, lsp.Diagnostic{
@@ -63,9 +63,7 @@ func (s *server) findLinks(txt string) []lsp.Diagnostic {
 				Severity: 4,
 			})
 		}
-
 	}
-
 	return diagnostics
 }
 

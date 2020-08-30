@@ -1,8 +1,8 @@
 package neuron
 
 type QueryResult struct {
-	Skipped Skipped        `json:"skipped"`
-	Result  []Result       `json:"result"`
+	Skipped Skipped  `json:"skipped"`
+	Result  []Result `json:"result"`
 	// Query   []NeuronQuery `json:"query"`
 }
 
@@ -12,16 +12,16 @@ type QueryClass struct {
 }
 
 type Result struct {
-	ZettelTags        []string              `json:"zettelTags"`
-	ZettelDay         string               `json:"zettelDay"`
-	ZettelID          string                `json:"zettelID"`
-	ZettelError       ZettelError           `json:"zettelError"`
-	ZettelContent     []interface{}         `json:"zettelContent"`
+	ZettelTags    []string      `json:"zettelTags"`
+	ZettelDay     string        `json:"zettelDay"`
+	ZettelID      string        `json:"zettelID"`
+	ZettelError   ZettelError   `json:"zettelError"`
+	ZettelContent []interface{} `json:"zettelContent"`
 	// ZettelQueries     [][]ResultZettelQuery `json:"zettelQueries"`
-	ZettelFormat      ZettelFormat          `json:"zettelFormat"`
-	ZettelPath        string                `json:"zettelPath"`
-	ZettelTitle       string                `json:"zettelTitle"`
-	ZettelTitleInBody bool                  `json:"zettelTitleInBody"`
+	ZettelFormat      ZettelFormat `json:"zettelFormat"`
+	ZettelPath        string       `json:"zettelPath"`
+	ZettelTitle       string       `json:"zettelTitle"`
+	ZettelTitleInBody bool         `json:"zettelTitleInBody"`
 }
 
 type ZettelError struct {
@@ -32,18 +32,21 @@ type Skipped struct {
 }
 
 type ZettelsViewLinkView string
+
 const (
-	LinkViewDefault ZettelsViewLinkView = "LinkView_Default"
+	LinkViewDefault  ZettelsViewLinkView = "LinkView_Default"
 	LinkViewShowDate ZettelsViewLinkView = "LinkView_ShowDate"
 )
 
 type QueryEnum string
+
 const (
-	ZettelQueryZettelByID QueryEnum = "ZettelQuery_ZettelByID"
+	ZettelQueryZettelByID   QueryEnum = "ZettelQuery_ZettelByID"
 	ZettelQueryZettelsByTag QueryEnum = "ZettelQuery_ZettelsByTag"
 )
 
 type ZettelFormat string
+
 const (
 	Markdown ZettelFormat = "markdown"
 )
