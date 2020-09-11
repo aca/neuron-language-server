@@ -237,6 +237,8 @@ func (s *server) handleTextDocumentDefinition(ctx context.Context, conn *jsonrpc
 	w = strings.ReplaceAll(w, "<", "")
 	w = strings.ReplaceAll(w, ">", "")
 
+	w = strings.ReplaceAll(w, "?cf", "")
+
 	neuronResult, ok := s.neuronMeta[w]
 	if !ok {
 		s.logger.Printf("%v doesn't exist", w)
