@@ -6,9 +6,9 @@
 
 pkgs.buildGoModule {
   pname = "neuron-language-server";
-  version = "0.1";
+  version = "0.1.1";
 
   src = ./.;
 
-  vendorSha256 = "02dajl4l3c8522ik2hmiq8cx4kj4h2ykx8l7qsal5xznx9pqbs7i";
+  vendorSha256 = "0pjjkw0633l8qbvwzy57rx76zjn3w3kf5f7plxnpxih9zj0q258l";
 }
