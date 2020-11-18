@@ -6,7 +6,6 @@ import (
 	"log"
 	"net"
 	"os"
-	"time"
 
 	"github.com/aca/neuron-language-server/neuron"
 	"github.com/sourcegraph/go-lsp"
@@ -44,13 +43,6 @@ func main() {
 	}
 
 	s.logger.Print("start")
-
-	go func() {
-		for {
-			s.logger.Print("ping")
-			time.Sleep(time.Second * 5)
-		}
-	}()
 
 	handler := jsonrpc2.HandlerWithError(s.handle)
 

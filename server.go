@@ -34,10 +34,8 @@ func (s *server) update(uri lsp.DocumentURI) {
 	}
 }
 
-var (
-  // Wiki-style links https://github.com/srid/neuron/pull/351
-	neuronLinkRegex = regexp.MustCompile(`\[\[\S+\]\]`)
-)
+// Wiki-style links https://github.com/srid/neuron/pull/351
+var neuronLinkRegex = regexp.MustCompile(`\[?\[\[([^]\s]+)\]?\]\]`)
 
 func (s *server) findLinks(txt string) []lsp.Diagnostic {
 	lines := strings.Split(txt, "\n")
@@ -201,13 +199,13 @@ func (s *server) handleTextDocumentDefinition(ctx context.Context, conn *jsonrpc
 
 	w := s.WordAt(params.TextDocument.URI, params.Position)
 
-	w = strings.ReplaceAll(w, "[[[", "")
-	w = strings.ReplaceAll(w, "]]]", "")
+	matches := neuronLinkRegex.FindStringSubmatch(w)
+	if matches == nil || len(matches) != 2 {
+		s.logger.Printf("%s not found", w)
+		return nil, nil
+	}
 
-	w = strings.ReplaceAll(w, "[[", "")
-	w = strings.ReplaceAll(w, "]]", "")
-
-	w = strings.ReplaceAll(w, "?cf", "")
+	w = strings.ReplaceAll(matches[1], "?cf", "")
 
 	neuronResult, ok := s.neuronMeta[w]
 	if !ok {
@@ -234,10 +232,13 @@ func (s *server) handleTextDocumentHover(ctx context.Context, conn *jsonrpc2.Con
 
 	w := s.WordAt(params.TextDocument.URI, params.Position)
 
-  w = strings.TrimPrefix(w, "[[[")
-  w = strings.TrimSuffix(w, "]]]")
-  w = strings.TrimPrefix(w, "[[")
-  w = strings.TrimSuffix(w, "]]")
+	matches := neuronLinkRegex.FindStringSubmatch(w)
+	if matches == nil || len(matches) != 2 {
+		s.logger.Printf("%v not found: ", w)
+		return nil, nil
+	}
+
+	w = matches[1]
 
 	neuronResult, ok := s.neuronMeta[w]
 	if !ok {
