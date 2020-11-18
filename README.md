@@ -33,7 +33,6 @@ Supports
 #### Installation
 ```
 go get -u github.com/aca/neuron-language-server
-# Or: nix-build (if you have Nix)
 ```
 
 #### LSP client settings
@@ -45,10 +44,10 @@ go get -u github.com/aca/neuron-language-server
       "filetypes": ["markdown"]
     },
   ```
-- neovim, [nvim-lsp](https://github.com/neovim/nvim-lsp)
+- neovim, [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig)
   ```lua
-  local nvim_lsp = require('nvim_lsp')
-  local configs = require('nvim_lsp/configs')
+  local nvim_lsp = require'lspconfig'
+  local configs = require'lspconfig/configs'
 
   configs.neuron_ls = {
     default_config = {
@@ -60,5 +59,6 @@ go get -u github.com/aca/neuron-language-server
       settings = {};
     };
   }
+
   nvim_lsp.neuron_ls.setup{}
   ```
